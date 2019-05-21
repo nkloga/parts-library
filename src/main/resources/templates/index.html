@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
+    <title>Parts list</title>
+</head>
+<body>
+    <div class="container">
+        <div style="padding-top:5%; padding-bottom:4%">
+            <img src="/images/logo.png"  style="width:5%; padding-bottom:1%"/>
+            <span style="font-size:2rem; margin-left:1%; font-weight:500">Parts list</span>
+        </div>
+
+        <table class="table">
+            <div style="display:contents">
+                <form class="input-group mb-3" action="#" th:action="@{/get}" method="post">
+                    <input style="width:30%; display:initial" type="text" th:value="${sourceText}" name="sourceText"
+                           class="form-control" placeholder="Search by part name" aria-label="Part name"
+                           aria-describedby="basic-addon2"/>
+                    <input style="margin-bottom:0.5%" class="btn btn-outline-secondary" type="submit"/>
+                </form>
+                <span style="padding-left:32%">Show: </span>
+                <a href="/necessary">necessary</a> /
+                <a href="/optional">optional</a> /
+                <a href="/">all</a>
+            </div>
+            <thead>
+            <tr>
+                <th>Name</th>
+                <th>Necessity</th>
+                <th>Quantity</th>
+                <th>Edit</th>
+            </tr>
+            </thead>
+            <tbody>
+                <tr th:each="part: ${partPage.content}">
+                    <td th:text="${part.name}"></td>
+                    <td th:text="${part.necessity}"></td>
+                    <td th:text="${part.quantity}"></td>
+                    <td>
+                        <div class="btn-group">
+                            <a class="btn btn-warning" role="button" th:href="@{/edit/{id}(id=${part.id})}">Edit</a>
+                            <a class="btn btn-danger" role="button" th:href="@{/delete/{id}(id=${part.id})}">Delete</a>
+                        </div>
+                    </td>
+                </tr>
+                <br>
+                <tr>
+                    <td><h5>
+                        PC's can be assembled:
+                        <span th:text="${pc}"></span></h5></td>
+                    <td>
+
+                    </td>
+                    <td></td>
+                    <td>
+                        <span th:if="${partPage.totalPages > 0}" class="pagination" style="display:contents"
+                              th:each="pageNumber : ${pageNumbers}">
+                        <a th:href="@{/(size=${partPage.size}, page=${pageNumber})}" th:text=${pageNumber}
+                           th:class="${pageNumber==partPage.number + 1} ? active"></a>
+                        </span>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <div style="padding-left:1%">
+            <a class="btn btn-success" role="button" href="/addpart">Add a new part</a>
+        </div>
+        <br>
+    </div>
+</body>
+</html>
