@@ -13,6 +13,7 @@ import org.springframework.ui.Model;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class PartsServiceImpl implements PartsService {
@@ -28,12 +29,16 @@ public class PartsServiceImpl implements PartsService {
     public Integer amountOfPcsCanBeAssembled() {
         List<Part> parts = partsRepository.findAll();
         if (parts.size() > 1) {
-            return partsRepository.findAll().stream().filter(Part::getNecessity).min(Comparator.comparing(Part::getQuantity)).get().getQuantity();
+            parts = partsRepository.findAll().stream().filter(Part::getNecessity).collect(Collectors.toList());
+            if (parts.size() > 0) {
+                return parts.stream().min(Comparator.comparing(Part::getQuantity)).get().getQuantity();
+            } else {
+                return 0;
+            }
         } else if (parts.size() == 1 && parts.get(0).getNecessity()) {
             return parts.get(0).getQuantity();
         } else return 0;
     }
-
     @Override
     public Part save(Part part) {
         return partsRepository.save(part);
